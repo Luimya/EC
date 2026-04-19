@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #080808; font-family: 'Space Grotesk', sans-serif; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.section { font-size: 10px; color: #6B7280; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 4px; }
+/* Base button */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; border: none; border-radius: 2px; cursor: pointer; transition: all 200ms cubic-bezier(0.16,1,0.3,1); padding: 0 20px; height: 40px; }
+.btn-primary { background: #F0185C; color: #F0F0F0; }
+.btn-primary:hover { background: #F4437A; box-shadow: 0 0 20px rgba(240,24,92,0.35); }
+.btn-secondary { background: transparent; color: #F0F0F0; border: 1px solid #3D3D3D; }
+.btn-secondary:hover { border-color: #7C3AED; color: #A78BFA; }
+.btn-ghost { background: transparent; color: #9CA3AF; border: none; }
+.btn-ghost:hover { color: #F0F0F0; }
+.btn-violet { background: #7C3AED; color: #F0F0F0; }
+.btn-violet:hover { background: #8B5CF6; box-shadow: 0 0 20px rgba(124,58,237,0.3); }
+.btn-sm { height: 32px; font-size: 11px; padding: 0 14px; }
+.btn-lg { height: 52px; font-size: 14px; padding: 0 28px; }
+.btn-disabled { background: #1A1A1A; color: #374151; cursor: not-allowed; border: 1px solid #2A2A2A; }
+.divider { height: 1px; background: #1A1A1A; }
+</style>
+</head><body>
+<div class="section">Primary Actions</div>
+<div class="row">
+  <button class="btn btn-primary">カートに追加</button>
+  <button class="btn btn-violet">今すぐ購入</button>
+  <button class="btn btn-secondary">詳しく見る</button>
+  <button class="btn btn-ghost">スキップ →</button>
+</div>
+<div class="divider"></div>
+<div class="section">Sizes</div>
+<div class="row">
+  <button class="btn btn-primary btn-sm">追加</button>
+  <button class="btn btn-primary">カートに追加</button>
+  <button class="btn btn-primary btn-lg">今すぐ購入する</button>
+</div>
+<div class="divider"></div>
+<div class="section">Disabled State</div>
+<div class="row">
+  <button class="btn btn-disabled">在庫切れ</button>
+</div>
+</body></html>

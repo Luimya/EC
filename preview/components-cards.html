@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #080808; font-family: 'Space Grotesk', sans-serif; padding: 20px; display: flex; gap: 16px; flex-wrap: wrap; }
+.card { background: #111; border: 1px solid #2A2A2A; border-radius: 2px; width: 160px; overflow: hidden; transition: box-shadow 200ms; cursor: pointer; }
+.card:hover { box-shadow: 0 0 24px rgba(124,58,237,0.2); border-color: #3D3D3D; }
+.img-placeholder { width: 100%; height: 120px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.img-text { font-size: 10px; color: #3D3D3D; letter-spacing: 0.1em; text-transform: uppercase; }
+.card-body { padding: 12px; display: flex; flex-direction: column; gap: 4px; }
+.card-label { font-size: 9px; color: #6B7280; letter-spacing: 0.14em; text-transform: uppercase; }
+.card-name { font-family: 'Noto Sans JP', sans-serif; font-weight: 300; font-size: 13px; color: #F0F0F0; line-height: 1.35; }
+.card-price { font-size: 14px; font-weight: 500; color: #F0F0F0; letter-spacing: -0.02em; margin-top: 4px; }
+.card-price-old { font-size: 11px; color: #525252; text-decoration: line-through; }
+.badge { display: inline-flex; font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 999px; padding: 2px 7px; }
+.badge-new { background: rgba(0,229,204,0.12); color: #00E5CC; border: 1px solid rgba(0,229,204,0.25); }
+.badge-lim { background: rgba(240,24,92,0.12); color: #F0185C; border: 1px solid rgba(240,24,92,0.25); }
+</style>
+</head><body>
+<!-- Standard card -->
+<div class="card">
+  <div class="img-placeholder" style="background:linear-gradient(135deg,#1a1a2e,#111)">
+    <span class="img-text">PHOTO</span>
+  </div>
+  <div class="card-body">
+    <span class="card-label">アパレル</span>
+    <div class="card-name">ボイドオーバーサイズT</div>
+    <div class="card-price">¥8,800</div>
+  </div>
+</div>
+<!-- NEW badge card -->
+<div class="card">
+  <div class="img-placeholder" style="background:linear-gradient(135deg,#1E0A45,#111); position:relative">
+    <span class="img-text">PHOTO</span>
+    <span class="badge badge-new" style="position:absolute;top:8px;left:8px">NEW</span>
+  </div>
+  <div class="card-body">
+    <span class="card-label">ジュエリー</span>
+    <div class="card-name">空虚の指輪</div>
+    <div class="card-price">¥12,800</div>
+  </div>
+</div>
+<!-- Limited + sale card -->
+<div class="card">
+  <div class="img-placeholder" style="background:linear-gradient(135deg,#2D0A1A,#111); position:relative">
+    <span class="img-text">PHOTO</span>
+    <span class="badge badge-lim" style="position:absolute;top:8px;left:8px">限定</span>
+  </div>
+  <div class="card-body">
+    <span class="card-label">アイドル</span>
+    <div class="card-name">夜想曲 写真集 vol.3</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+      <div class="card-price" style="color:#F0185C">¥3,200</div>
+      <div class="card-price-old">¥4,200</div>
+    </div>
+  </div>
+</div>
+<!-- Sold out card -->
+<div class="card" style="opacity:0.5">
+  <div class="img-placeholder" style="background:#0d0d0d">
+    <span class="img-text">SOLD OUT</span>
+  </div>
+  <div class="card-body">
+    <span class="card-label">アパレル</span>
+    <div class="card-name">闇夜のコート</div>
+    <div class="card-price" style="color:#525252">¥24,800</div>
+  </div>
+</div>
+</body></html>

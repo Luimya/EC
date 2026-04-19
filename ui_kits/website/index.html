@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YAMIICHI 闇市</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;200;300;400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #080808; --surface: #111; --elevated: #1A1A1A;
+    --border: #2A2A2A; --border-bright: #3D3D3D;
+    --fg: #F0F0F0; --fg2: #9CA3AF; --fg3: #6B7280; --fg4: #374151;
+    --violet: #7C3AED; --violet-l: #A78BFA; --violet-d: #5B21B6;
+    --pink: #F0185C; --pink-l: #F4437A;
+    --cyan: #00E5CC;
+    --font-jp: 'Noto Sans JP', sans-serif;
+    --font-la: 'Space Grotesk', sans-serif;
+    --ease: cubic-bezier(0.16,1,0.3,1);
+    --nav-h: 60px;
+  }
+  html { background: var(--bg); color: var(--fg); font-family: var(--font-jp); scroll-behavior: smooth; }
+  body { min-height: 100vh; overflow-x: hidden; }
+  body::after {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.035; mix-blend-mode: overlay;
+  }
+  button { cursor: pointer; border: none; font-family: var(--font-la); }
+  a { text-decoration: none; color: inherit; }
+  input, select { font-family: var(--font-la); }
+  ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--border-bright); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// ── DATA ──────────────────────────────────────────────────────
+const PRODUCTS = [
+  { id:1, name:'ボイドオーバーサイズT', sub:'Void Oversized Tee', cat:'アパレル', price:8800, badge:'NEW', color:'#1a1a2e' },
+  { id:2, name:'空虚の指輪', sub:'Void Ring', cat:'ジュエリー', price:12800, badge:'NEW', color:'#1E0A45' },
+  { id:3, name:'夜想曲 写真集 vol.3', sub:'Nocturne Photobook', cat:'アイドル', price:3200, oldPrice:4200, badge:'限定', color:'#2D0A1A' },
+  { id:4, name:'アビス カーゴパンツ', sub:'Abyss Cargo Pants', cat:'アパレル', price:18800, color:'#0d1a0d' },
+  { id:5, name:'闇夜のコート', sub:'Dark Night Coat', cat:'アパレル', price:32800, badge:'COLLAB', color:'#1a1218' },
+  { id:6, name:'ネオン チョーカー', sub:'Neon Choker', cat:'ジュエリー', price:6400, badge:'NEW', color:'#0a1a1a' },
+  { id:7, name:'夜市 CDシングル', sub:'Yamiichi CD Single', cat:'アイドル', price:1800, color:'#1a1a1a' },
+  { id:8, name:'シャドウ レザーバッグ', sub:'Shadow Leather Bag', cat:'アパレル', price:24800, color:'#1a150a' },
+];
+
+const CATS = ['すべて','アパレル','ジュエリー','アイドル'];
+
+// ── ICONS ──────────────────────────────────────────────────────
+const IconCart = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+  </svg>
+);
+const IconSearch = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+);
+const IconClose = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+const IconArrow = ({dir='right'}) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{transform: dir==='left'?'rotate(180deg)':'none'}}>
+    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+  </svg>
+);
+const IconHeart = ({filled}) => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill={filled?"#F0185C":"none"} stroke={filled?"#F0185C":"currentColor"} strokeWidth="1.5" strokeLinecap="round">
+    <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+  </svg>
+);
+const IconMinus = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>;
+const IconPlus = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>;
+
+// ── NAV ───────────────────────────────────────────────────────
+function Nav({ page, setPage, cartCount }) {
+  const navItems = [['shop','ショップ'],['about','ブランド']];
+  return (
+    <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:100,height:'var(--nav-h)',borderBottom:'1px solid var(--border)',background:'rgba(8,8,8,0.92)',backdropFilter:'blur(12px)',display:'flex',alignItems:'center',padding:'0 32px',gap:'32px'}}>
+      <div onClick={()=>setPage('home')} style={{display:'flex',flexDirection:'column',cursor:'pointer',gap:'2px',flexShrink:0}}>
+        <span style={{fontFamily:'var(--font-jp)',fontWeight:100,fontSize:'22px',color:'var(--fg)',letterSpacing:'-1px',lineHeight:1}}>闇市</span>
+        <span style={{fontFamily:'var(--font-la)',fontWeight:500,fontSize:'8px',color:'var(--fg3)',letterSpacing:'6px',textTransform:'uppercase'}}>YAMIICHI</span>
+      </div>
+      <div style={{flex:1}}/>
+      {navItems.map(([k,label])=>(
+        <button key={k} onClick={()=>setPage(k)} style={{background:'none',color:page===k?'var(--fg)':'var(--fg3)',fontFamily:'var(--font-jp)',fontSize:'13px',padding:'4px 0',borderBottom:page===k?'1px solid var(--violet)':'1px solid transparent',transition:'color 200ms',fontWeight:300}}>
+          {label}
+        </button>
+      ))}
+      <div style={{display:'flex',gap:'16px',alignItems:'center',marginLeft:'8px'}}>
+        <button style={{background:'none',color:'var(--fg3)',display:'flex',alignItems:'center',transition:'color 150ms'}} onMouseEnter={e=>e.currentTarget.style.color='var(--fg)'} onMouseLeave={e=>e.currentTarget.style.color='var(--fg3)'}><IconSearch/></button>
+        <button onClick={()=>setPage('cart')} style={{background:'none',color:page==='cart'?'var(--pink)':'var(--fg3)',display:'flex',alignItems:'center',position:'relative',transition:'color 150ms'}} onMouseEnter={e=>e.currentTarget.style.color='var(--fg)'} onMouseLeave={e=>e.currentTarget.style.color=page==='cart'?'var(--pink)':'var(--fg3)'}>
+          <IconCart/>
+          {cartCount>0&&<span style={{position:'absolute',top:'-6px',right:'-8px',background:'var(--pink)',color:'#fff',borderRadius:'999px',width:'16px',height:'16px',fontSize:'9px',fontFamily:'var(--font-la)',fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center'}}>{cartCount}</span>}
+        </button>
+      </div>
+    </nav>
+  );
+}
+
+// ── BADGE ─────────────────────────────────────────────────────
+function Badge({ text }) {
+  const styles = {
+    'NEW':    { bg:'rgba(0,229,204,0.12)', color:'#00E5CC', border:'1px solid rgba(0,229,204,0.25)' },
+    '限定':    { bg:'rgba(240,24,92,0.12)', color:'#F0185C', border:'1px solid rgba(240,24,92,0.25)' },
+    'COLLAB': { bg:'rgba(124,58,237,0.15)', color:'#A78BFA', border:'1px solid rgba(124,58,237,0.3)' },
+    'SALE':   { bg:'#F0185C', color:'#fff', border:'none' },
+  };
+  const s = styles[text] || styles['NEW'];
+  return <span style={{display:'inline-flex',alignItems:'center',fontFamily:'var(--font-la)',fontSize:'9px',fontWeight:600,letterSpacing:'0.1em',textTransform:'uppercase',borderRadius:'999px',padding:'2px 8px',...s}}>{text}</span>;
+}
+
+// ── PRODUCT CARD ──────────────────────────────────────────────
+function ProductCard({ p, onClick }) {
+  const [hovered, setHovered] = useState(false);
+  const [liked, setLiked] = useState(false);
+  return (
+    <div onClick={onClick} onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)}
+      style={{background:'var(--surface)',border:'1px solid',borderColor:hovered?'var(--border-bright)':'var(--border)',borderRadius:'2px',overflow:'hidden',cursor:'pointer',transition:'box-shadow 200ms, border-color 200ms',boxShadow:hovered?'0 0 24px rgba(124,58,237,0.18)':'none'}}>
+      <div style={{width:'100%',aspectRatio:'3/4',background:`linear-gradient(160deg,${p.color},#0a0a0a)`,position:'relative',display:'flex',alignItems:'center',justifyContent:'center'}}>
+        <span style={{fontFamily:'var(--font-la)',fontSize:'10px',color:'#2A2A2A',letterSpacing:'0.1em',textTransform:'uppercase'}}>PHOTO</span>
+        {p.badge && <div style={{position:'absolute',top:'10px',left:'10px'}}><Badge text={p.badge}/></div>}
+        <button onClick={e=>{e.stopPropagation();setLiked(!liked)}} style={{position:'absolute',top:'8px',right:'8px',background:'rgba(8,8,8,0.6)',backdropFilter:'blur(4px)',border:'1px solid var(--border)',borderRadius:'2px',width:'32px',height:'32px',display:'flex',alignItems:'center',justifyContent:'center',color:liked?'var(--pink)':'var(--fg3)',transition:'color 150ms'}}>
+          <IconHeart filled={liked}/>
+        </button>
+      </div>
+      <div style={{padding:'12px'}}>
+        <div style={{fontFamily:'var(--font-la)',fontSize:'9px',color:'var(--fg3)',letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:'4px'}}>{p.cat}</div>
+        <div style={{fontFamily:'var(--font-jp)',fontWeight:300,fontSize:'13px',color:'var(--fg)',lineHeight:1.35,marginBottom:'8px'}}>{p.name}</div>
+        <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+          <span style={{fontFamily:'var(--font-la)',fontSize:'15px',fontWeight:500,color:p.oldPrice?'var(--pink)':'var(--fg)',letterSpacing:'-0.02em'}}>¥{p.price.toLocaleString()}</span>
+          {p.oldPrice&&<span style={{fontFamily:'var(--font-la)',fontSize:'11px',color:'var(--fg4)',textDecoration:'line-through'}}>¥{p.oldPrice.toLocaleString()}</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── HOME PAGE ─────────────────────────────────────────────────
+function HomePage({ setPage, setSelectedProduct }) {
+  return (
+    <div style={{paddingTop:'var(--nav-h)'}}>
+      {/* Hero */}
+      <div style={{height:'92vh',background:'linear-gradient(160deg,#1E0A45 0%,#0d0d0d 45%,#2D0A1A 100%)',display:'flex',flexDirection:'column',justifyContent:'flex-end',padding:'0 48px 72px',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 30% 60%,rgba(124,58,237,0.15) 0%,transparent 60%)'}}/>
+        <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 80% 30%,rgba(240,24,92,0.08) 0%,transparent 50%)'}}/>
+        <div style={{position:'relative',zIndex:1,maxWidth:'640px'}}>
+          <div style={{fontFamily:'var(--font-la)',fontSize:'11px',color:'var(--fg3)',letterSpacing:'0.16em',textTransform:'uppercase',marginBottom:'24px'}}>2024 S/S COLLECTION</div>
+          <h1 style={{fontFamily:'var(--font-jp)',fontWeight:100,fontSize:'clamp(48px,8vw,96px)',lineHeight:1.05,color:'var(--fg)',letterSpacing:'-0.02em',marginBottom:'24px'}}>闇に潜む、<br/>美しいものへ。</h1>
+          <p style={{fontFamily:'var(--font-jp)',fontWeight:300,fontSize:'16px',color:'var(--fg2)',lineHeight:1.7,marginBottom:'40px',maxWidth:'420px'}}>アンダーグラウンドの美学を纏う。限定アパレル、アイドルグッズ、ジュエリーを一堂に。</p>
+          <div style={{display:'flex',gap:'16px',flexWrap:'wrap'}}>
+            <button onClick={()=>setPage('shop')} style={{background:'var(--pink)',color:'#fff',fontFamily:'var(--font-la)',fontWeight:600,fontSize:'13px',letterSpacing:'0.1em',textTransform:'uppercase',padding:'0 32px',height:'48px',border:'none',borderRadius:'2px',transition:'background 200ms, box-shadow 200ms',cursor:'pointer'}} onMouseEnter={e=>{e.currentTarget.style.background='var(--pink-l)';e.currentTarget.style.boxShadow='0 0 24px rgba(240,24,92,0.35)'}} onMouseLeave={e=>{e.currentTarget.style.background='var(--pink)';e.currentTarget.style.boxShadow='none'}}>
+              ショップを見る <span style={{marginLeft:'8px'}}>→</span>
+            </button>
+            <button onClick={()=>setPage('about')} style={{background:'transparent',color:'var(--fg2)',fontFamily:'var(--font-la)',fontWeight:500,fontSize:'13px',letterSpacing:'0.1em',textTransform:'uppercase',padding:'0 24px',height:'48px',border:'1px solid var(--border-bright)',borderRadius:'2px',transition:'color 200ms,border-color 200ms',cursor:'pointer'}} onMouseEnter={e=>{e.currentTarget.style.color='var(--fg)';e.currentTarget.style.borderColor='var(--violet-l)'}} onMouseLeave={e=>{e.currentTarget.style.color='var(--fg2)';e.currentTarget.style.borderColor='var(--border-bright)'}}>
+              ブランドについて
+            </button>
+          </div>
+        </div>
+        {/* scroll hint */}
+        <div style={{position:'absolute',bottom:'24px',right:'48px',display:'flex',flexDirection:'column',alignItems:'center',gap:'6px',opacity:0.4}}>
+          <div style={{width:'1px',height:'40px',background:'linear-gradient(to bottom,transparent,var(--fg2))'}}/>
+          <span style={{fontFamily:'var(--font-la)',fontSize:'9px',color:'var(--fg2)',letterSpacing:'0.14em',textTransform:'uppercase',writingMode:'vertical-rl'}}>SCROLL</span>
+        </div>
+      </div>
+
+      {/* Categories */}
+      <div style={{padding:'64px 48px'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'32px'}}>
+          <h2 style={{fontFamily:'var(--font-jp)',fontWeight:200,fontSize:'28px',color:'var(--fg)',letterSpacing:'-0.01em'}}>カテゴリー</h2>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'16px'}}>
+          {[['アパレル','APPAREL','#1a1a2e'],['ジュエリー','JEWELRY','#1E0A45'],['アイドル','IDOL GOODS','#2D0A1A']].map(([ja,en,bg])=>(
+            <div key={ja} onClick={()=>setPage('shop')} style={{height:'200px',background:`linear-gradient(160deg,${bg},#0a0a0a)`,border:'1px solid var(--border)',borderRadius:'2px',display:'flex',flexDirection:'column',justifyContent:'flex-end',padding:'20px',cursor:'pointer',transition:'border-color 200ms,box-shadow 200ms'}} onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--border-bright)';e.currentTarget.style.boxShadow='0 0 24px rgba(124,58,237,0.12)'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.boxShadow='none'}}>
+              <div style={{fontFamily:'var(--font-la)',fontSize:'9px',color:'var(--fg3)',letterSpacing:'0.16em',textTransform:'uppercase',marginBottom:'4px'}}>{en}</div>
+              <div style={{fontFamily:'var(--font-jp)',fontWeight:200,fontSize:'22px',color:'var(--fg)'}}>{ja}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* New Arrivals */}
+      <div style={{padding:'0 48px 80px'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'32px'}}>
+          <h2 style={{fontFamily:'var(--font-jp)',fontWeight:200,fontSize:'28px',color:'var(--fg)',letterSpacing:'-0.01em'}}>新着商品</h2>
+          <button onClick={()=>setPage('shop')} style={{background:'none',color:'var(--fg3)',fontFamily:'var(--font-la)',fontSize:'12px',letterSpacing:'0.08em',textTransform:'uppercase',display:'flex',alignItems:'center',gap:'6px',border:'none',cursor:'pointer',transition:'color 150ms'}} onMouseEnter={e=>e.currentTarget.style.color='var(--violet-l)'} onMouseLeave={e=>e.currentTarget.style.color='var(--fg3)'}>
+            すべて見る <IconArrow/>
+          </button>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'16px'}}>
+          {PRODUCTS.slice(0,4).map(p=>(
+            <ProductCard key={p.id} p={p} onClick={()=>{setSelectedProduct(p);setPage('product')}}/>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer style={{borderTop:'1px solid var(--border)',padding:'40px 48px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <div>
+          <div style={{fontFamily:'var(--font-jp)',fontWeight:100,fontSize:'24px',color:'var(--fg)',letterSpacing:'-1px'}}>闇市</div>
+          <div style={{fontFamily:'var(--font-jp)',fontWeight:300,fontSize:'12px',color:'var(--fg3)',marginTop:'4px'}}>闇に潜む、美しいものへ。</div>
+        </div>
+        <div style={{display:'flex',gap:'32px'}}>
+          {['特定商取引法','プライバシーポリシー','お問い合わせ','SNS'].map(t=>(
+            <span key={t} style={{fontFamily:'var(--font-jp)',fontSize:'12px',color:'var(--fg3)',cursor:'pointer'}}>{t}</span>
+          ))}
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+// ── SHOP PAGE ─────────────────────────────────────────────────
+function ShopPage({ setPage, setSelectedProduct }) {
+  const [activeCat, setActiveCat] = useState('すべて');
+  const filtered = activeCat==='すべて' ? PRODUCTS : PRODUCTS.filter(p=>p.cat===activeCat);
+  return (
+    <div style={{paddingTop:'var(--nav-h)',minHeight:'100vh'}}>
+      <div style={{padding:'40px 48px 24px',borderBottom:'1px solid var(--border)'}}>
+        <div style={{fontFamily:'var(--font-la)',fontSize:'10px',color:'var(--fg3)',letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:'8px'}}>SHOP</div>
+        <h1 style={{fontFamily:'var(--font-jp)',fontWeight:100,fontSize:'40px',color:'var(--fg)',letterSpacing:'-0.02em'}}>ショップ</h1>
+      </div>
+      <div style={{display:'flex',gap:0}}>
+        {/* Sidebar */}
+        <div style={{width:'200px',flexShrink:0,borderRight:'1px solid var(--border)',padding:'32px 24px',position:'sticky',top:'var(--nav-h)',height:'calc(100vh - var(--nav-h))',overflowY:'auto'}}>
+          <div style={{fontFamily:'var(--font-la)',fontSize:'10px',color:'var(--fg3)',letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:'16px'}}>カテゴリー</div>
+          {CATS.map(cat=>(
+            <button key={cat} onClick={()=>setActiveCat(cat)} style={{display:'block',width:'100%',textAlign:'left',background:'none',border:'none',fontFamily:'var(--font-jp)',fontSize:'14px',fontWeight:300,color:activeCat===cat?'var(--fg)':'var(--fg3)',padding:'8px 0',borderBottom:'1px solid transparent',borderBottomColor:activeCat===cat?'var(--violet)':'transparent',cursor:'pointer',transition:'color 150ms',marginBottom:'4px'}}>
+              {cat}
+            </button>
+          ))}
+          <div style={{marginTop:'32px',fontFamily:'var(--font-la)',fontSize:'10px',color:'var(--fg3)',letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:'16px'}}>価格帯</div>
+          {['¥3,000以下','¥3,000〜¥10,000','¥10,000〜¥30,000','¥30,000以上'].map(r=>(
+            <div key={r} style={{display:'flex',alignItems:'center',gap:'8px',padding:'6px 0',cursor:'pointer'}}>
+              <div style={{width:'14px',height:'14px',border:'1px solid var(--border-bright)',borderRadius:'2px'}}/>
+              <span style={{fontFamily:'var(--font-jp)',fontSize:'12px',color:'var(--fg3)'}}>{r}</span>
+            </div>
+          ))}
+        </div>
+        {/* Grid */}
+        <div style={{flex:1,padding:'32px 32px'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'24px'}}>
+            <span style={{fontFamily:'var(--font-jp)',fontSize:'13px',color:'var(--fg3)'}}>{filtered.length}件の商品</span>
+            <select style={{background:'var(--surface)',border:'1px solid var(--border)',color:'var(--fg2)',fontSize:'12px',padding:'6px 12px',borderRadius:'2px',outline:'none'}}>
+              <option>新着順</option><option>価格: 安い順</option><option>価格: 高い順</option>
+            </select>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'16px'}}>
+            {filtered.map(p=>(
+              <ProductCard key={p.id} p={p} onClick={()=>{setSelectedProduct(p);setPage('product')}}/>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── PRODUCT DETAIL ────────────────────────────────────────────
+function ProductPage({ product, setPage, addToCart }) {
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [qty, setQty] = useState(1);
+  const [added, setAdded] = useState(false);
+  const p = product || PRODUCTS[0];
+  const sizes = p.cat==='アパレル' ? ['XS','S','M','L','XL'] : null;
+
+  const handleAdd = () => {
+    addToCart(p, qty);
+    setAdded(true);
+    setTimeout(()=>setAdded(false), 2000);
+  };
+
+  return (
+    <div style={{paddingTop:'var(--nav-h)',minHeight:'100vh'}}>
+      <div style={{padding:'16px 48px',display:'flex',gap:'8px',alignItems:'center'}}>
+        <button onClick={()=>setPage('shop')} style={{background:'none',border:'none',color:'var(--fg3)',fontFamily:'var(--font-jp)',fontSize:'13px',cursor:'pointer',display:'flex',alignItems:'center',gap:'4px'}}>
+          <IconArrow dir='left'/> ショップに戻る
+        </button>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0',minHeight:'80vh'}}>
+        {/* Image */}
+        <div style={{background:`linear-gradient(160deg,${p.color},#0a0a0a)`,display:'flex',alignItems:'center',justifyContent:'center',minHeight:'600px',position:'relative'}}>
+          {p.badge&&<div style={{position:'absolute',top:'24px',left:'24px'}}><Badge text={p.badge}/></div>}
+          <span style={{fontFamily:'var(--font-la)',fontSize:'12px',color:'#2A2A2A',letterSpacing:'0.1em',textTransform:'uppercase'}}>PRODUCT PHOTO</span>
+        </div>
+        {/* Info */}
+        <div style={{padding:'48px',display:'flex',flexDirection:'column',gap:'24px',borderLeft:'1px solid var(--border)'}}>
+          <div>
+            <div style={{fontFamily:'var(--font-la)',fontSize:'10px',color:'var(--fg3)',letterSpacing:'0.16em',textTransform:'uppercase',marginBottom:'8px'}}>{p.cat}</div>
+            <h1 style={{fontFamily:'var(--font-jp)',fontWeight:200,fontSize:'32px',color:'var(--fg)',lineHeight:1.2,marginBottom:'4px'}}>{p.name}</h1>
+            <div style={{fontFamily:'var(--font-la)',fontSize:'13px',color:'var(--fg3)'}}>{p.sub}</div>
+          </div>
+          <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+            <span style={{fontFamily:'var(--font-la)',fontWeight:300,fontSize:'32px',color:p.oldPrice?'var(--pink)':'var(--fg)',letterSpacing:'-0.02em'}}>¥{p.price.toLocaleString()}</span>
+            {p.oldPrice&&<span style={{fontFamily:'var(--font-la)',fontSize:'16px',color:'var(--fg4)',textDecoration:'line-through'}}>¥{p.oldPrice.toLocaleString()}</span>}
+          </div>
+          <div style={{height:'1px',background:'var(--border)'}}/>
+          {/* Size */}
+          {sizes && (
+            <div>
+              <div style={{fontFamily:'var(--font-la)',fontSize:'10px',color:'var(--fg3)',letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:'12px'}}>SIZE {selectedSize&&`— ${selectedSize}`}</div>
+              <div style={{display:'flex',gap:'8px'}}>
+                {sizes.map(s=>(
+                  <button key={s} onClick={()=>setSelectedSize(s)} style={{width:'44px',height:'44px',border:'1px solid',borderColor:selectedSize===s?'var(--violet)':'var(--border)',borderRadius:'2px',background:selectedSize===s?'rgba(124,58,237,0.15)':'transparent',color:selectedSize===s?'var(--violet-l)':'var(--fg2)',fontFamily:'var(--font-la)',fontSize:'12px',fontWeight:600,cursor:'pointer',transition:'all 150ms',boxShadow:selectedSize===s?'0 0 12px rgba(124,58,237,0.2)':'none'}}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {/* Qty */}
+          <div>
+            <div style={{fontFamily:'var(--font-la)',fontSize:'10px',color:'var(--fg3)',letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:'12px'}}>数量</div>
+            <div style={{display:'flex',alignItems:'center',gap:0,border:'1px solid var(--border)',borderRadius:'2px',width:'fit-content'}}>
+              <button onClick={()=>setQty(Math.max(1,qty-1))} style={{width:'40px',height:'40px',background:'none',border:'none',color:'var(--fg2)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',transition:'color 150ms'}}><IconMinus/></button>
+              <span style={{width:'40px',textAlign:'center',fontFamily:'var(--font-la)',fontSize:'14px',color:'var(--fg)',borderLeft:'1px solid var(--border)',borderRight:'1px solid var(--border)',lineHeight:'40px'}}>{qty}</span>
+              <button onClick={()=>setQty(qty+1)} style={{width:'40px',height:'40px',background:'none',border:'none',color:'var(--fg2)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',transition:'color 150ms'}}><IconPlus/></button>
+            </div>
+          </div>
+          {/* CTA */}
+          <div style={{display:'flex',flexDirection:'column',gap:'12px'}}>
+            <button onClick={handleAdd} style={{width:'100%',height:'52px',background:added?'rgba(0,229,204,0.15)':'var(--pink)',border:added?'1px solid var(--cyan)':'none',color:added?'var(--cyan)':'#fff',fontFamily:'var(--font-la)',fontWeight:600,fontSize:'13px',letterSpacing:'0.1em',textTransform:'uppercase',borderRadius:'2px',cursor:'pointer',transition:'all 200ms',boxShadow:added?'0 0 20px rgba(0,229,204,0.2)':'none'}}>
+              {added ? '✓ カートに追加しました' : 'カートに追加する'}
+            </button>
+            <button onClick={()=>{addToCart(p,qty);setPage('cart')}} style={{width:'100%',height:'52px',background:'var(--violet)',color:'#fff',fontFamily:'var(--font-la)',fontWeight:600,fontSize:'13px',letterSpacing:'0.1em',textTransform:'uppercase',borderRadius:'2px',border:'none',cursor:'pointer',transition:'background 200ms'}} onMouseEnter={e=>e.currentTarget.style.background='#8B5CF6'} onMouseLeave={e=>e.currentTarget.style.background='var(--violet)'}>
+              今すぐ購入する
+            </button>
+          </div>
+          <div style={{height:'1px',background:'var(--border)'}}/>
+          <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
+            {['送料無料（¥5,000以上のご注文）','7日以内の返品可能','安全な決済'].map(t=>(
+              <div key={t} style={{display:'flex',gap:'8px',alignItems:'center'}}>
+                <div style={{width:'4px',height:'4px',borderRadius:'50%',background:'var(--violet)',flexShrink:0}}/>
+                <span style={{fontFamily:'var(--font-jp)',fontSize:'12px',color:'var(--fg3)'}}>{t}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── CART PAGE ─────────────────────────────────────────────────
+function CartPage({ cart, setCart, setPage }) {
+  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const removeItem = (id) => setCart(c=>c.filter(i=>i.id!==id));
+  const updateQty = (id,d) => setCart(c=>c.map(i=>i.id===id?{...i,qty:Math.max(1,i.qty+d)}:i));
+  const [step, setStep] = useState('cart'); // 'cart' | 'checkout' | 'done'
+
+  if(step==='done') return (
+    <div style={{paddingTop:'var(--nav-h)',minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'24px'}}>
+      <div style={{fontFamily:'var(--font-jp)',fontWeight:100,fontSize:'48px',color:'var(--cyan)'}}>ご注文完了</div>
+      <div style={{fontFamily:'var(--font-jp)',fontWeight:300,fontSize:'16px',color:'var(--fg2)'}}>ご購入ありがとうございます。確認メールをお送りしました。</div>
+      <button onClick={()=>{setCart([]);setPage('shop');setStep('cart')}} style={{background:'var(--violet)',color:'#fff',fontFamily:'var(--font-la)',fontWeight:600,fontSize:'13px',letterSpacing:'0.1em',textTransform:'uppercase',padding:'0 32px',height:'48px',border:'none',borderRadius:'2px',cursor:'pointer',marginTop:'16px'}}>ショッピングを続ける</button>
+    </div>
+  );
+
+  if(step==='checkout') return (
+    <div style={{paddingTop:'var(--nav-h)',minHeight:'100vh',padding:'calc(var(--nav-h) + 40px) 48px 80px'}}>
+      <h1 style={{fontFamily:'var(--font-jp)',fontWeight:100,fontSize:'36px',color:'var(--fg)',marginBottom:'40px'}}>お支払い情報</h1>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 360px',gap:'48px'}}>
+        <div style={{display:'flex',flexDirection:'column',gap:'24px'}}>
+          {[['お名前','山田 花子'],['メールアドレス','hanako@example.com'],['電話番号','080-0000-0000'],['郵便番号','150-0001'],['住所','東京都渋谷区神宮前'],['建物名・部屋番号','(任意)']].map(([label,ph])=>(
+            <div key={label} style={{display:'flex',flexDirection:'column',gap:'6px'}}>
+              <label style={{fontFamily:'var(--font-la)',fontSize:'10px',color:'var(--fg3)',letterSpacing:'0.12em',textTransform:'uppercase'}}>{label}</label>
+              <input placeholder={ph} style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'2px',color:'var(--fg)',fontSize:'14px',padding:'0 14px',height:'44px',outline:'none'}} onFocus={e=>{e.target.style.borderColor='var(--violet)';e.target.style.boxShadow='0 0 0 2px rgba(124,58,237,0.2)'}} onBlur={e=>{e.target.style.borderColor='var(--border)';e.target.style.boxShadow='none'}}/>
+            </div>
+          ))}
+          <button onClick={()=>setStep('done')} style={{background:'var(--pink)',color:'#fff',fontFamily:'var(--font-la)',fontWeight:600,fontSize:'13px',letterSpacing:'0.1em',textTransform:'uppercase',height:'52px',border:'none',borderRadius:'2px',cursor:'pointer',marginTop:'8px'}}>注文を確定する →</button>
+        </div>
+        <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'2px',padding:'24px',height:'fit-content',display:'flex',flexDirection:'column',gap:'16px'}}>
+          <div style={{fontFamily:'var(--font-la)',fontSize:'11px',color:'var(--fg3)',letterSpacing:'0.14em',textTransform:'uppercase',marginBottom:'8px'}}>ORDER SUMMARY</div>
+          {cart.map(i=>(
+            <div key={i.id} style={{display:'flex',justifyContent:'space-between',gap:'12px'}}>
+              <span style={{fontFamily:'var(--font-jp)',fontSize:'13px',color:'var(--fg2)',flex:1}}>{i.name} × {i.qty}</span>
+              <span style={{fontFamily:'var(--font-la)',fontSize:'13px',color:'var(--fg)',flexShrink:0}}>¥{(i.price*i.qty).toLocaleString()}</span>
+            </div>
+          ))}
+          <div style={{height:'1px',background:'var(--border)'}}/>
+          <div style={{display:'flex',justifyContent:'space-between'}}>
+            <span style={{fontFamily:'var(--font-jp)',fontSize:'13px',color:'var(--fg3)'}}>小計</span>
+            <span style={{fontFamily:'var(--font-la)',fontSize:'13px',color:'var(--fg)'}}>¥{total.toLocaleString()}</span>
+          </div>
+          <div style={{display:'flex',justifyContent:'space-between'}}>
+            <span style={{fontFamily:'var(--font-jp)',fontSize:'13px',color:'var(--fg3)'}}>送料</span>
+            <span style={{fontFamily:'var(--font-la)',fontSize:'13px',color:'var(--cyan)'}}>無料</span>
+          </div>
+          <div style={{height:'1px',background:'var(--border)'}}/>
+          <div style={{display:'flex',justifyContent:'space-between'}}>
+            <span style={{fontFamily:'var(--font-jp)',fontSize:'14px',color:'var(--fg)',fontWeight:500}}>合計</span>
+            <span style={{fontFamily:'var(--font-la)',fontSize:'20px',color:'var(--fg)',fontWeight:300,letterSpacing:'-0.02em'}}>¥{total.toLocaleString()}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{paddingTop:'var(--nav-h)',minHeight:'100vh',padding:'calc(var(--nav-h) + 40px) 48px 80px'}}>
+      <h1 style={{fontFamily:'var(--font-jp)',fontWeight:100,fontSize:'36px',color:'var(--fg)',marginBottom:'40px'}}>カート</h1>
+      {cart.length===0 ? (
+        <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'16px',paddingTop:'80px'}}>
+          <div style={{fontFamily:'var(--font-jp)',fontWeight:300,fontSize:'18px',color:'var(--fg3)'}}>カートに商品がありません</div>
+          <button onClick={()=>setPage('shop')} style={{background:'var(--violet)',color:'#fff',fontFamily:'var(--font-la)',fontWeight:600,fontSize:'12px',letterSpacing:'0.12em',textTransform:'uppercase',padding:'0 24px',height:'44px',border:'none',borderRadius:'2px',cursor:'pointer',marginTop:'8px'}}>ショップへ</button>
+        </div>
+      ) : (
+        <div style={{display:'grid',gridTemplateColumns:'1fr 320px',gap:'48px'}}>
+          <div style={{display:'flex',flexDirection:'column',gap:0}}>
+            {cart.map((item,i)=>(
+              <div key={item.id} style={{display:'flex',gap:'16px',padding:'20px 0',borderBottom:'1px solid var(--border)'}}>
+                <div style={{width:'80px',height:'80px',background:`linear-gradient(160deg,${item.color||'#1a1a2e'},#0a0a0a)`,borderRadius:'2px',flexShrink:0}}/>
+                <div style={{flex:1,display:'flex',flexDirection:'column',gap:'4px'}}>
+                  <div style={{fontFamily:'var(--font-jp)',fontSize:'14px',color:'var(--fg)',fontWeight:300}}>{item.name}</div>
+                  <div style={{fontFamily:'var(--font-la)',fontSize:'11px',color:'var(--fg3)',letterSpacing:'0.06em'}}>{item.cat}</div>
+                </div>
+                <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'12px'}}>
+                  <span style={{fontFamily:'var(--font-la)',fontSize:'16px',color:'var(--fg)',fontWeight:500}}>¥{item.price.toLocaleString()}</span>
+                  <div style={{display:'flex',alignItems:'center',gap:0,border:'1px solid var(--border)',borderRadius:'2px'}}>
+                    <button onClick={()=>updateQty(item.id,-1)} style={{width:'32px',height:'32px',background:'none',border:'none',color:'var(--fg2)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}}><IconMinus/></button>
+                    <span style={{width:'32px',textAlign:'center',fontFamily:'var(--font-la)',fontSize:'13px',color:'var(--fg)',borderLeft:'1px solid var(--border)',borderRight:'1px solid var(--border)',lineHeight:'32px'}}>{item.qty}</span>
+                    <button onClick={()=>updateQty(item.id,1)} style={{width:'32px',height:'32px',background:'none',border:'none',color:'var(--fg2)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}}><IconPlus/></button>
+                  </div>
+                  <button onClick={()=>removeItem(item.id)} style={{background:'none',border:'none',color:'var(--fg4)',fontSize:'11px',fontFamily:'var(--font-la)',cursor:'pointer',letterSpacing:'0.06em'}}>削除</button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'2px',padding:'24px',height:'fit-content',display:'flex',flexDirection:'column',gap:'16px'}}>
+            <div style={{fontFamily:'var(--font-la)',fontSize:'11px',color:'var(--fg3)',letterSpacing:'0.14em',textTransform:'uppercase'}}>ORDER SUMMARY</div>
+            <div style={{display:'flex',justifyContent:'space-between'}}>
+              <span style={{fontFamily:'var(--font-jp)',fontSize:'13px',color:'var(--fg3)'}}>小計 ({cart.reduce((s,i)=>s+i.qty,0)}点)</span>
+              <span style={{fontFamily:'var(--font-la)',fontSize:'13px',color:'var(--fg)'}}>¥{total.toLocaleString()}</span>
+            </div>
+            <div style={{display:'flex',justifyContent:'space-between'}}>
+              <span style={{fontFamily:'var(--font-jp)',fontSize:'13px',color:'var(--fg3)'}}>送料</span>
+              <span style={{fontFamily:'var(--font-la)',fontSize:'13px',color:'var(--cyan)'}}>無料</span>
+            </div>
+            <div style={{height:'1px',background:'var(--border)'}}/>
+            <div style={{display:'flex',justifyContent:'space-between'}}>
+              <span style={{fontFamily:'var(--font-jp)',fontSize:'15px',color:'var(--fg)'}}>合計</span>
+              <span style={{fontFamily:'var(--font-la)',fontSize:'24px',color:'var(--fg)',fontWeight:300,letterSpacing:'-0.02em'}}>¥{total.toLocaleString()}</span>
+            </div>
+            <button onClick={()=>setStep('checkout')} style={{width:'100%',height:'52px',background:'var(--pink)',color:'#fff',fontFamily:'var(--font-la)',fontWeight:600,fontSize:'13px',letterSpacing:'0.1em',textTransform:'uppercase',border:'none',borderRadius:'2px',cursor:'pointer',marginTop:'8px',transition:'background 200ms'}} onMouseEnter={e=>e.currentTarget.style.background='var(--pink-l)'} onMouseLeave={e=>e.currentTarget.style.background='var(--pink)'}>
+              お支払い手続きへ →
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── ABOUT PAGE ────────────────────────────────────────────────
+function AboutPage() {
+  return (
+    <div style={{paddingTop:'var(--nav-h)',minHeight:'100vh'}}>
+      {/* Hero */}
+      <div style={{height:'60vh',background:'linear-gradient(160deg,#1E0A45,#2D0A1A 60%,#080808)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'24px',borderBottom:'1px solid var(--border)',position:'relative',overflow:'hidden'}}>
+        <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at 50% 50%,rgba(124,58,237,0.12) 0%,transparent 70%)'}}/>
+        <div style={{fontFamily:'var(--font-jp)',fontWeight:100,fontSize:'80px',color:'var(--fg)',letterSpacing:'-4px',lineHeight:1,position:'relative'}}>闇市</div>
+        <div style={{fontFamily:'var(--font-jp)',fontWeight:200,fontSize:'18px',color:'var(--fg2)',position:'relative'}}>闇に潜む、美しいものへ。</div>
+      </div>
+      {/* Content */}
+      <div style={{maxWidth:'720px',margin:'0 auto',padding:'80px 48px'}}>
+        <div style={{fontFamily:'var(--font-la)',fontSize:'10px',color:'var(--violet-l)',letterSpacing:'0.16em',textTransform:'uppercase',marginBottom:'16px'}}>BRAND STORY</div>
+        <h2 style={{fontFamily:'var(--font-jp)',fontWeight:100,fontSize:'40px',color:'var(--fg)',lineHeight:1.2,marginBottom:'32px'}}>地下に宿る<br/>美学のために</h2>
+        <p style={{fontFamily:'var(--font-jp)',fontWeight:300,fontSize:'16px',color:'var(--fg2)',lineHeight:1.9,marginBottom:'24px'}}>
+          YAMIICHIは、アンダーグラウンドに生きるすべての人のために生まれました。チカアイドル、アニメ、ストリートカルチャー——見えない場所で輝くものを、世界へ届けるために。
+        </p>
+        <p style={{fontFamily:'var(--font-jp)',fontWeight:300,fontSize:'16px',color:'var(--fg2)',lineHeight:1.9,marginBottom:'48px'}}>
+          すべての商品は、私たちが心から信じるクリエイターやアーティストと共に制作しています。限定性を大切に、数量を絞り、丁寧に。それが闇市のやり方です。
+        </p>
+        <div style={{height:'1px',background:'var(--border)',marginBottom:'48px'}}/>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'32px'}}>
+          {[['2019','ブランド創設'],['150+','取り扱いブランド数'],['限定','全商品数量限定']].map(([num,label])=>(
+            <div key={num} style={{display:'flex',flexDirection:'column',gap:'8px'}}>
+              <div style={{fontFamily:'var(--font-la)',fontWeight:300,fontSize:'36px',color:'var(--violet-l)',letterSpacing:'-0.02em'}}>{num}</div>
+              <div style={{fontFamily:'var(--font-jp)',fontSize:'13px',color:'var(--fg3)'}}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── APP ───────────────────────────────────────────────────────
+function App() {
+  const [page, setPage] = useState(() => localStorage.getItem('ymc_page') || 'home');
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => { localStorage.setItem('ymc_page', page); }, [page]);
+
+  const addToCart = (product, qty=1) => {
+    setCart(c => {
+      const existing = c.find(i=>i.id===product.id);
+      if(existing) return c.map(i=>i.id===product.id?{...i,qty:i.qty+qty}:i);
+      return [...c, {...product, qty}];
+    });
+  };
+
+  const navigateTo = (p) => { window.scrollTo(0,0); setPage(p); };
+
+  const cartCount = cart.reduce((s,i)=>s+i.qty,0);
+
+  return (
+    <>
+      <Nav page={page} setPage={navigateTo} cartCount={cartCount}/>
+      {page==='home'    && <HomePage setPage={navigateTo} setSelectedProduct={setSelectedProduct}/>}
+      {page==='shop'    && <ShopPage setPage={navigateTo} setSelectedProduct={setSelectedProduct}/>}
+      {page==='product' && <ProductPage product={selectedProduct} setPage={navigateTo} addToCart={addToCart}/>}
+      {page==='cart'    && <CartPage cart={cart} setCart={setCart} setPage={navigateTo}/>}
+      {page==='about'   && <AboutPage/>}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #080808; font-family: 'Space Grotesk', sans-serif; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.row { display: flex; align-items: flex-end; gap: 4px; }
+.bar { background: #7C3AED; border-radius: 2px 2px 0 0; }
+.label { font-size: 9px; color: #525252; text-align: center; letter-spacing: 0.08em; margin-top: 4px; }
+.col { display: flex; flex-direction: column; align-items: center; }
+.section-label { font-size: 10px; color: #6B7280; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+.token-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.box { background: #7C3AED; border-radius: 1px; flex-shrink: 0; }
+.token-name { font-size: 11px; color: #9CA3AF; width: 90px; }
+.token-val { font-size: 11px; color: #525252; }
+</style>
+</head><body>
+<div class="section-label">Spacing Scale</div>
+<div class="row" style="align-items:flex-end;height:80px">
+  <div class="col"><div class="bar" style="width:20px;height:4px;opacity:0.4"></div><div class="label">1<br>4px</div></div>
+  <div class="col"><div class="bar" style="width:20px;height:8px;opacity:0.5"></div><div class="label">2<br>8px</div></div>
+  <div class="col"><div class="bar" style="width:20px;height:12px;opacity:0.55"></div><div class="label">3<br>12px</div></div>
+  <div class="col"><div class="bar" style="width:20px;height:16px;opacity:0.6"></div><div class="label">4<br>16px</div></div>
+  <div class="col"><div class="bar" style="width:20px;height:24px;opacity:0.65"></div><div class="label">6<br>24px</div></div>
+  <div class="col"><div class="bar" style="width:20px;height:32px;opacity:0.7"></div><div class="label">8<br>32px</div></div>
+  <div class="col"><div class="bar" style="width:20px;height:48px;opacity:0.8"></div><div class="label">12<br>48px</div></div>
+  <div class="col"><div class="bar" style="width:20px;height:64px;opacity:0.9"></div><div class="label">16<br>64px</div></div>
+  <div class="col"><div class="bar" style="width:20px;height:80px"></div><div class="label">20<br>80px</div></div>
+</div>
+</body></html>

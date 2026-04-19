@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #080808; font-family: 'Space Grotesk', sans-serif; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.section { font-size: 10px; color: #6B7280; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 2px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 10px; color: #9CA3AF; letter-spacing: 0.1em; text-transform: uppercase; }
+input, select { background: #111; border: 1px solid #2A2A2A; border-radius: 2px; color: #F0F0F0; font-family: 'Space Grotesk', sans-serif; font-size: 13px; padding: 0 12px; height: 40px; outline: none; transition: border-color 150ms, box-shadow 150ms; width: 180px; }
+input::placeholder { color: #374151; }
+input:focus { border-color: #7C3AED; box-shadow: 0 0 0 2px rgba(124,58,237,0.2); }
+input.error { border-color: #EF4444; }
+select { color: #9CA3AF; }
+.divider { height: 1px; background: #1A1A1A; }
+.hint { font-size: 10px; color: #525252; }
+.hint.err { color: #EF4444; }
+</style>
+</head><body>
+<div class="section">Text Inputs</div>
+<div class="row">
+  <div class="field">
+    <label>メールアドレス</label>
+    <input type="email" placeholder="you@example.com">
+    <span class="hint">ログインに使用します</span>
+  </div>
+  <div class="field">
+    <label>パスワード</label>
+    <input type="password" placeholder="••••••••" style="border-color:#7C3AED;box-shadow:0 0 0 2px rgba(124,58,237,0.2)">
+    <span class="hint">フォーカス状態</span>
+  </div>
+  <div class="field">
+    <label>郵便番号</label>
+    <input type="text" placeholder="000-0000" class="error">
+    <span class="hint err">正しい形式で入力してください</span>
+  </div>
+</div>
+<div class="divider"></div>
+<div class="section">Select</div>
+<div class="row">
+  <div class="field">
+    <label>サイズ</label>
+    <select><option>サイズを選択</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option></select>
+  </div>
+  <div class="field">
+    <label>数量</label>
+    <select><option>1</option><option>2</option><option>3</option></select>
+  </div>
+</div>
+</body></html>

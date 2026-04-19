@@ -1,0 +1,269 @@
+/* ============================================
+   YAMIICHI (闇市) — Design System Tokens
+   Colors & Typography
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;200;300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+/* ─── BASE COLOR TOKENS ─── */
+:root {
+  /* Backgrounds */
+  --color-bg-base:     #080808;
+  --color-bg-surface:  #111111;
+  --color-bg-elevated: #1A1A1A;
+  --color-bg-overlay:  rgba(8, 8, 8, 0.85);
+
+  /* Borders */
+  --color-border:        #2A2A2A;
+  --color-border-bright: #3D3D3D;
+  --color-border-focus:  #7C3AED;
+
+  /* Text */
+  --color-fg-primary:   #F0F0F0;
+  --color-fg-secondary: #9CA3AF;
+  --color-fg-muted:     #6B7280;
+  --color-fg-disabled:  #374151;
+  --color-fg-inverse:   #080808;
+
+  /* Primary Accent — Violet */
+  --color-violet-900: #1E0A45;
+  --color-violet-800: #2D1B69;
+  --color-violet-700: #4C1D95;
+  --color-violet-600: #5B21B6;
+  --color-violet-500: #7C3AED;
+  --color-violet-400: #8B5CF6;
+  --color-violet-300: #A78BFA;
+  --color-violet-200: #C4B5FD;
+  --color-violet-100: #EDE9FE;
+
+  /* CTA Accent — Neon Pink */
+  --color-pink-600: #9D0A3C;
+  --color-pink-500: #E3114F;
+  --color-pink-400: #F0185C;
+  --color-pink-300: #F4437A;
+  --color-pink-200: #F87BAA;
+  --color-pink-100: #FECDD3;
+
+  /* Secondary Accent — Cyan */
+  --color-cyan-500: #00B8A3;
+  --color-cyan-400: #00E5CC;
+  --color-cyan-300: #34EDD8;
+  --color-cyan-200: #67F2E4;
+
+  /* Neutral Scale */
+  --color-neutral-950: #080808;
+  --color-neutral-900: #111111;
+  --color-neutral-800: #1A1A1A;
+  --color-neutral-700: #2A2A2A;
+  --color-neutral-600: #3D3D3D;
+  --color-neutral-500: #525252;
+  --color-neutral-400: #737373;
+  --color-neutral-300: #9CA3AF;
+  --color-neutral-200: #D1D5DB;
+  --color-neutral-100: #F3F4F6;
+
+  /* ─── SEMANTIC COLOR TOKENS ─── */
+  --semantic-primary:        var(--color-violet-500);
+  --semantic-primary-hover:  var(--color-violet-400);
+  --semantic-primary-glow:   rgba(124, 58, 237, 0.25);
+
+  --semantic-cta:            var(--color-pink-400);
+  --semantic-cta-hover:      var(--color-pink-300);
+  --semantic-cta-glow:       rgba(240, 24, 92, 0.25);
+
+  --semantic-new:            var(--color-cyan-400);
+  --semantic-new-glow:       rgba(0, 229, 204, 0.2);
+
+  --semantic-success:        #22C55E;
+  --semantic-warning:        #F59E0B;
+  --semantic-error:          #EF4444;
+
+  --semantic-bg:             var(--color-bg-base);
+  --semantic-surface:        var(--color-bg-surface);
+  --semantic-elevated:       var(--color-bg-elevated);
+  --semantic-border:         var(--color-border);
+  --semantic-text:           var(--color-fg-primary);
+  --semantic-text-sub:       var(--color-fg-secondary);
+  --semantic-text-muted:     var(--color-fg-muted);
+
+  /* ─── TYPOGRAPHY ─── */
+  --font-jp:      'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  --font-latin:   'Space Grotesk', 'DM Sans', sans-serif;
+
+  /* Font Weights */
+  --fw-thin:      100;
+  --fw-extralight:200;
+  --fw-light:     300;
+  --fw-regular:   400;
+  --fw-medium:    500;
+  --fw-semibold:  600;
+  --fw-bold:      700;
+
+  /* Type Scale */
+  --text-xs:   11px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-md:   18px;
+  --text-lg:   24px;
+  --text-xl:   32px;
+  --text-2xl:  48px;
+  --text-3xl:  72px;
+  --text-4xl:  96px;
+
+  /* Line Heights */
+  --lh-tight:   1.1;
+  --lh-display: 1.2;
+  --lh-heading: 1.35;
+  --lh-body:    1.6;
+  --lh-relaxed: 1.75;
+
+  /* Letter Spacing */
+  --ls-tight:  -0.03em;
+  --ls-normal:  0;
+  --ls-wide:    0.06em;
+  --ls-wider:   0.10em;
+  --ls-widest:  0.16em;
+
+  /* ─── SPACING SCALE ─── */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-20:  80px;
+  --space-24:  96px;
+  --space-32: 128px;
+
+  /* ─── BORDER & RADIUS ─── */
+  --radius-none: 0;
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-pill: 999px;
+
+  --border-width: 1px;
+  --border-width-fine: 0.5px;
+
+  /* ─── SHADOWS & GLOW ─── */
+  --glow-violet:   0 0 20px rgba(124, 58, 237, 0.3), 0 0 40px rgba(124, 58, 237, 0.1);
+  --glow-pink:     0 0 20px rgba(240, 24, 92, 0.35), 0 0 40px rgba(240, 24, 92, 0.1);
+  --glow-cyan:     0 0 20px rgba(0, 229, 204, 0.3),  0 0 40px rgba(0, 229, 204, 0.1);
+  --glow-card:     0 0 24px rgba(124, 58, 237, 0.15);
+  --glow-focus:    0 0 0 2px rgba(124, 58, 237, 0.5);
+
+  /* ─── TRANSITIONS ─── */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-inout:  cubic-bezier(0.87, 0, 0.13, 1);
+  --duration-fast:   150ms;
+  --duration-base:   200ms;
+  --duration-slow:   400ms;
+
+  /* ─── LAYOUT ─── */
+  --container-max: 1280px;
+  --container-pad: var(--space-8);
+  --grid-cols:     12;
+  --grid-gutter:   var(--space-6);
+  --nav-height:    64px;
+}
+
+/* ─── SEMANTIC ELEMENT STYLES ─── */
+
+h1, .h1 {
+  font-family: var(--font-jp);
+  font-weight: var(--fw-thin);
+  font-size: var(--text-3xl);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-tight);
+  color: var(--color-fg-primary);
+}
+
+h2, .h2 {
+  font-family: var(--font-jp);
+  font-weight: var(--fw-extralight);
+  font-size: var(--text-2xl);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-tight);
+  color: var(--color-fg-primary);
+}
+
+h3, .h3 {
+  font-family: var(--font-jp);
+  font-weight: var(--fw-light);
+  font-size: var(--text-xl);
+  line-height: var(--lh-heading);
+  color: var(--color-fg-primary);
+}
+
+h4, .h4 {
+  font-family: var(--font-jp);
+  font-weight: var(--fw-regular);
+  font-size: var(--text-lg);
+  line-height: var(--lh-heading);
+  color: var(--color-fg-primary);
+}
+
+h5, .h5 {
+  font-family: var(--font-jp);
+  font-weight: var(--fw-medium);
+  font-size: var(--text-md);
+  line-height: var(--lh-heading);
+  color: var(--color-fg-primary);
+}
+
+p, .body {
+  font-family: var(--font-jp);
+  font-weight: var(--fw-regular);
+  font-size: var(--text-base);
+  line-height: var(--lh-body);
+  color: var(--color-fg-secondary);
+}
+
+.label {
+  font-family: var(--font-latin);
+  font-weight: var(--fw-semibold);
+  font-size: var(--text-xs);
+  letter-spacing: var(--ls-widest);
+  text-transform: uppercase;
+  color: var(--color-fg-muted);
+}
+
+.price {
+  font-family: var(--font-latin);
+  font-weight: var(--fw-medium);
+  font-size: var(--text-md);
+  color: var(--color-fg-primary);
+  letter-spacing: var(--ls-tight);
+}
+
+.price-large {
+  font-family: var(--font-latin);
+  font-weight: var(--fw-light);
+  font-size: var(--text-xl);
+  color: var(--color-fg-primary);
+}
+
+code, .mono {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: var(--text-sm);
+  color: var(--color-violet-300);
+  background: rgba(124, 58, 237, 0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* ─── GRAIN TEXTURE OVERLAY ─── */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  z-index: 9999;
+}

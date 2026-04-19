@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #080808; font-family: 'Space Grotesk', sans-serif; padding: 20px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+.swatch { display: flex; align-items: center; gap: 10px; }
+.dot { width: 40px; height: 40px; border-radius: 2px; flex-shrink: 0; }
+.info { display: flex; flex-direction: column; gap: 2px; }
+.name { font-size: 11px; font-weight: 600; color: #9CA3AF; letter-spacing: 0.1em; text-transform: uppercase; }
+.hex  { font-size: 13px; color: #F0F0F0; font-weight: 400; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; width: 100%; }
+.label { font-size: 10px; color: #6B7280; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px; }
+.col { display: flex; flex-direction: column; gap: 6px; }
+</style>
+</head><body>
+<div class="col" style="width:100%">
+  <div class="label">Backgrounds</div>
+  <div class="row">
+    <div class="swatch"><div class="dot" style="background:#080808;border:1px solid #2A2A2A"></div><div class="info"><span class="name">bg-base</span><span class="hex">#080808</span></div></div>
+    <div class="swatch"><div class="dot" style="background:#111111;border:1px solid #2A2A2A"></div><div class="info"><span class="name">bg-surface</span><span class="hex">#111111</span></div></div>
+    <div class="swatch"><div class="dot" style="background:#1A1A1A;border:1px solid #2A2A2A"></div><div class="info"><span class="name">bg-elevated</span><span class="hex">#1A1A1A</span></div></div>
+  </div>
+</div>
+<div class="col" style="width:100%; margin-top:4px">
+  <div class="label">Neutrals</div>
+  <div class="row">
+    <div class="swatch"><div class="dot" style="background:#2A2A2A"></div><div class="info"><span class="name">border</span><span class="hex">#2A2A2A</span></div></div>
+    <div class="swatch"><div class="dot" style="background:#3D3D3D"></div><div class="info"><span class="name">border-bright</span><span class="hex">#3D3D3D</span></div></div>
+    <div class="swatch"><div class="dot" style="background:#525252"></div><div class="info"><span class="name">n-500</span><span class="hex">#525252</span></div></div>
+    <div class="swatch"><div class="dot" style="background:#6B7280"></div><div class="info"><span class="name">fg-muted</span><span class="hex">#6B7280</span></div></div>
+    <div class="swatch"><div class="dot" style="background:#9CA3AF"></div><div class="info"><span class="name">fg-secondary</span><span class="hex">#9CA3AF</span></div></div>
+    <div class="swatch"><div class="dot" style="background:#F0F0F0"></div><div class="info"><span class="name">fg-primary</span><span class="hex">#F0F0F0</span></div></div>
+  </div>
+</div>
+</body></html>

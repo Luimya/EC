@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #080808; font-family: 'Space Grotesk', sans-serif; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.section-label { font-size: 10px; color: #6B7280; letter-spacing: 0.14em; text-transform: uppercase; }
+.item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.box { width: 48px; height: 48px; border: 1px solid #2A2A2A; background: #111; }
+.name { font-size: 9px; color: #525252; letter-spacing: 0.06em; text-align: center; }
+.divider { height: 1px; background: #1A1A1A; }
+.border-demo { display: flex; gap: 16px; align-items: center; }
+.bd { height: 32px; width: 80px; }
+.bd-label { font-size: 9px; color: #525252; letter-spacing: 0.08em; }
+</style>
+</head><body>
+<div class="section-label">Corner Radius</div>
+<div class="row">
+  <div class="item"><div class="box" style="border-radius:0px"></div><div class="name">none / 0</div></div>
+  <div class="item"><div class="box" style="border-radius:2px"></div><div class="name">sm / 2px</div></div>
+  <div class="item"><div class="box" style="border-radius:4px"></div><div class="name">md / 4px</div></div>
+  <div class="item"><div class="box" style="border-radius:999px;width:80px;height:28px"></div><div class="name">pill / 999px</div></div>
+</div>
+<div class="divider"></div>
+<div class="section-label">Border Styles</div>
+<div class="border-demo">
+  <div style="display:flex;flex-direction:column;gap:4px">
+    <div class="bd" style="border:1px solid #2A2A2A"></div>
+    <div class="bd-label">1px #2A2A2A — default</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:4px">
+    <div class="bd" style="border:1px solid #3D3D3D"></div>
+    <div class="bd-label">1px #3D3D3D — bright</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:4px">
+    <div class="bd" style="border:1px solid #7C3AED"></div>
+    <div class="bd-label">1px #7C3AED — focus</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:4px">
+    <div class="bd" style="border:0.5px solid #2A2A2A"></div>
+    <div class="bd-label">0.5px — fine</div>
+  </div>
+</div>
+</body></html>
